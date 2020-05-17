@@ -18,10 +18,10 @@ const CookieNotice = () => {
         }
     `)
 
-    const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`
+    const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`;
     //Disable the tracking by default
-    console.log("Disabling Google Analytics Tracking")
-    window[disableGoogleAnalyticsKey] = true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any)[disableGoogleAnalyticsKey] = true
 
     const [consentResponse, setConsentResponse] = useState<
         CCMTrackingConsentCookie
@@ -40,11 +40,13 @@ const CookieNotice = () => {
         }
         if (consentResponse === "accepted") {
             // Enable Google Analytics only if someone opts in.
-            window[disableGoogleAnalyticsKey] = false
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any)[disableGoogleAnalyticsKey] = false 
         } else {
-            window[disableGoogleAnalyticsKey] = true
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any)[disableGoogleAnalyticsKey] = true
         }
-    }, [consentResponse])
+    }, [consentResponse, disableGoogleAnalyticsKey])
 
     // We don't want to show the notice until we've had a chance to read the
     // cookie, otherwise we will get jank from the notice briefly flashing up.
