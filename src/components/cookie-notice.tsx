@@ -4,26 +4,32 @@ import Cookies from "js-cookie"
 
 const COOKIE_CONSENT_KEY = "ccm_cookie_consent"
 
+type CCMTrackingConsentCookie = "accepted" | "declined" | undefined
+
 const CookieNotice = () => {
     const data = useStaticQuery<GatsbyTypes.CookieNoticeQuery>(graphql`
         query CookieNotice {
             site {
                 siteMetadata {
                     cookieNotice
+                    googleAnalyticsTrackingID
                 }
             }
         }
     `)
 
+    const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`
+    //Disable the tracking by default
+    console.log("Disabling Google Analytics Tracking")
+    window[disableGoogleAnalyticsKey] = true
+
     const [consentResponse, setConsentResponse] = useState<
-        "accepted" | "declined" | undefined
+        CCMTrackingConsentCookie
     >(undefined)
     const [isInitialCookieLoaded, setIsInitialCookieLoaded] = useState(false)
     useEffect(() => {
         // @ts-ignore
-        const cookie: "accepted" | "declined" | undefined = Cookies.get(
-            COOKIE_CONSENT_KEY
-        )
+        const cookie: CCMTrackingConsentCookie = Cookies.get(COOKIE_CONSENT_KEY)
         setConsentResponse(cookie)
         setIsInitialCookieLoaded(true)
     }, [])
@@ -33,9 +39,10 @@ const CookieNotice = () => {
             Cookies.set(COOKIE_CONSENT_KEY, consentResponse, { expires: 365 })
         }
         if (consentResponse === "accepted") {
-            // Enable GA
+            // Enable Google Analytics only if someone opts in.
+            window[disableGoogleAnalyticsKey] = false
         } else {
-            // Disable GA
+            window[disableGoogleAnalyticsKey] = true
         }
     }, [consentResponse])
 
