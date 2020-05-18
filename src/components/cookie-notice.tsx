@@ -18,10 +18,10 @@ const CookieNotice = () => {
         }
     `)
 
-    const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`;
+    const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`
     //Disable the tracking by default
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any)[disableGoogleAnalyticsKey] = true
+    ;(window as any)[disableGoogleAnalyticsKey] = true
 
     const [consentResponse, setConsentResponse] = useState<
         CCMTrackingConsentCookie
@@ -41,10 +41,10 @@ const CookieNotice = () => {
         if (consentResponse === "accepted") {
             // Enable Google Analytics only if someone opts in.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any)[disableGoogleAnalyticsKey] = false 
+            ;(window as any)[disableGoogleAnalyticsKey] = false
         } else {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any)[disableGoogleAnalyticsKey] = true
+            ;(window as any)[disableGoogleAnalyticsKey] = true
         }
     }, [consentResponse, disableGoogleAnalyticsKey])
 
