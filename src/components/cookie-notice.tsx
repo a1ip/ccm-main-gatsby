@@ -19,15 +19,15 @@ const CookieNotice = () => {
     `)
 
     const disableGoogleAnalyticsKey = `ga-disable-${data.site?.siteMetadata?.googleAnalyticsTrackingID}`
-    //Disable the tracking by default
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any)[disableGoogleAnalyticsKey] = true
 
     const [consentResponse, setConsentResponse] = useState<
         CCMTrackingConsentCookie
     >(undefined)
     const [isInitialCookieLoaded, setIsInitialCookieLoaded] = useState(false)
     useEffect(() => {
+        //Disable the tracking by default
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any)[disableGoogleAnalyticsKey] = true
         // @ts-ignore
         const cookie: CCMTrackingConsentCookie = Cookies.get(COOKIE_CONSENT_KEY)
         setConsentResponse(cookie)
@@ -36,7 +36,9 @@ const CookieNotice = () => {
 
     useEffect(() => {
         if (consentResponse != null) {
-            Cookies.set(COOKIE_CONSENT_KEY, consentResponse, { expires: 365 })
+            Cookies.set(COOKIE_CONSENT_KEY, consentResponse, {
+                expires: 365,
+            })
         }
         if (consentResponse === "accepted") {
             // Enable Google Analytics only if someone opts in.
