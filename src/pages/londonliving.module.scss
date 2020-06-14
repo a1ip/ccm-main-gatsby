@@ -58,7 +58,7 @@ section.london-living a {
     .blurb {
         grid-area: blurb;
     }
-    
+
     .links {
         grid-area: links;
         display: grid;
@@ -139,32 +139,47 @@ section.london-living a {
     }
 }
 
-.episodes {
+.seasons {
     grid-area: episodes;
+
+    .season {
+        .episodes {
+            display: grid;
+            grid-template-columns: 1fr;
+            column-gap: var(--general-padding);
+            row-gap: var(--general-padding);
+        }
+
+        h3 {
+            font-family: "Klinic Slab";
+            text-transform: none;
+            font-weight: 400;
+            font-size: 1.7em;
+        }
+    }
 }
 
 .episode {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: 1fr;
     grid-gap: calc(var(--general-padding) / 2);
-    grid-template-rows: auto auto 410px;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
-        "header header header header header header header header header header header header"
-        "blurb blurb blurb blurb blurb blurb blurb blurb blurb . . . "
-        "image image image image media media media media media media media media "
-        "image image image image media media media media media media media media ";
+        "header"
+        "blurb"
+        "media";
     border-width: 2px;
     border-bottom-width: 2px;
     border-bottom-color: var(--light-color);
     border-bottom-style: solid;
     padding-bottom: var(--general-padding);
 
-    &:nth-of-type(1) {
-        border-width: 2px;
-        border-top-width: 2px;
-        border-top-color: var(--light-color);
-        border-top-style: solid;
-    }
+    // &:nth-of-type(1) {
+    //     border-width: 2px;
+    //     border-top-width: 2px;
+    //     border-top-color: var(--light-color);
+    //     border-top-style: solid;
+    // }
 
     @media only screen and (max-width: $break) {
         grid-template-columns: 1fr;
@@ -206,15 +221,12 @@ section.london-living a {
 
         .video {
             width: 100%;
+            display: hidden;
         }
     }
 
     .image {
         grid-area: image;
-        // background-repeat: no-repeat;
-        // background-size: cover;
-        // background-position-x: center;
-
         overflow: hidden;
 
         img {

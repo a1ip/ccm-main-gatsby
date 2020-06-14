@@ -1,6 +1,5 @@
 import React from "react"
 import { graphql, useStaticQuery } from "gatsby"
-import Img from "gatsby-image/withIEPolyfill"
 
 import Layout from "../components/layout"
 
@@ -15,7 +14,34 @@ import styles from "./londonliving.module.scss"
 
 import HeaderUnderlay from "../components/header-underlay"
 
-import YouTube from "react-youtube"
+type Episode = {
+    title: string
+    audioUrl: string
+    blurb: string
+}
+
+type Season = {
+    title: string
+    episodes: Episode[]
+}
+
+const PodcastEpisode: React.FC<Episode> = ({ title, audioUrl, blurb }) => {
+    return (
+        <div key={title} className={styles.episode}>
+            <h2>{title}</h2>
+            <div className={styles.blurb}>
+                <p>{blurb}</p>
+            </div>
+            <div className={styles.media}>
+                <div className={styles.audio}>
+                    <audio controls={true} preload="metadata">
+                        <source src={audioUrl} type="audio/mpeg" />
+                    </audio>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const LondonLivingPage: React.FC<{}> = () => {
     const data = useStaticQuery<GatsbyTypes.LondonLivingQuery>(graphql`
@@ -32,24 +58,17 @@ const LondonLivingPage: React.FC<{}> = () => {
                 fileAbsolutePath: { regex: "/londonliving/podcast.md$/" }
             ) {
                 frontmatter {
-                    blurb
                     links {
                         name
                         link
                         type
                     }
-                    episodes {
+                    seasons {
                         title
-                        person
-                        blurb
-                        audioUrl
-                        youTubeVideoId
-                        image {
-                            childImageSharp {
-                                fluid(maxWidth: 1200) {
-                                    ...GatsbyImageSharpFluid
-                                }
-                            }
+                        episodes {
+                            title
+                            blurb
+                            audioUrl
                         }
                     }
                 }
@@ -57,37 +76,19 @@ const LondonLivingPage: React.FC<{}> = () => {
         }
     `)
 
-    const episodes = data.podcast!.frontmatter!.episodes!.map(episode => {
-        const imageFlud = episode!.image!.childImageSharp!.fluid
-        return (
-            <div key={episode!.title} className={styles.episode}>
-                <h2>
-                    {episode!.title} : {episode!.person}
-                </h2>
-                <div className={styles.blurb}>
-                    <p>{episode!.blurb}</p>
+    const episodes = data.podcast!.frontmatter!.seasons!.map(
+        (season: Season) => {
+            const episodes = season.episodes.map((episode: Episode) => (
+                <PodcastEpisode key={episode.audioUrl} {...episode} />
+            ))
+            return (
+                <div className={styles.season} key={season.title}>
+                    <h3>Season {season.title}</h3>
+                    <div className={styles.episodes}>{episodes}</div>
                 </div>
-                <div className={styles.image}>
-                    <Img fluid={imageFlud} />
-                </div>
-                <div className={styles.media}>
-                    <div className={styles.audio}>
-                        <audio controls={true} preload="metadata">
-                            <source src={episode!.audioUrl} type="audio/mpeg" />
-                        </audio>
-                    </div>
-                    <div>
-                        {episode!.youTubeVideoId != null ? (
-                            <YouTube
-                                className={styles.video}
-                                videoId={episode!.youTubeVideoId}
-                            />
-                        ) : null}
-                    </div>
-                </div>
-            </div>
-        )
-    })
+            )
+        }
+    )
 
     const links = data.podcast!.frontmatter!.links!.map(link => {
         let badge = <></>
@@ -119,7 +120,7 @@ const LondonLivingPage: React.FC<{}> = () => {
             description={undefined}
         >
             <HeaderUnderlay className={styles.londonLiving} />
-            <Section className={styles.londonLiving}>
+            <Section wider className={styles.londonLiving}>
                 <div className={styles.content}>
                     <div className={styles.intro}>
                         <div className={styles.header}>
@@ -136,11 +137,7 @@ const LondonLivingPage: React.FC<{}> = () => {
                     </div>
 
                     <div className={styles.podcast}>
-                        <h1>Episodes</h1>
-                        <div className={styles.blurb}>
-                            <p>{data.podcast!.frontmatter!.blurb!}</p>
-                        </div>
-                        <div className={styles.episodes}>{episodes}</div>
+                        <div className={styles.seasons}>{episodes}</div>
                     </div>
                 </div>
             </Section>
