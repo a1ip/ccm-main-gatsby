@@ -25,6 +25,12 @@ type Season = {
     episodes: Episode[]
 }
 
+type PodcastServiceLink = {
+    name: string
+    link: string
+    type: "ApplePodcasts" | "Spotify"
+}
+
 const PodcastEpisode: React.FC<Episode> = ({ title, audioUrl, blurb }) => {
     return (
         <div key={title} className={styles.episode}>
@@ -77,7 +83,7 @@ const LondonLivingPage: React.FC<{}> = () => {
     `)
 
     const episodes = data.podcast!.frontmatter!.seasons!.map(
-        (season: Season) => {
+        (season: any) => {
             const episodes = season.episodes.map((episode: Episode) => (
                 <PodcastEpisode key={episode.audioUrl} {...episode} />
             ))
@@ -90,21 +96,25 @@ const LondonLivingPage: React.FC<{}> = () => {
         }
     )
 
-    const links = data.podcast!.frontmatter!.links!.map(link => {
+    const links = (data.podcast?.frontmatter?.links ?? []).map((link: any) => {
         let badge = <></>
 
-        if (link!.type === "Spotify") {
-            badge = <SpotifyBadge />
-        }
-        if (link!.type === "ApplePodcasts") {
-            badge = <ApplePodcastBadge />
+        switch (link.type) {
+            case "ApplePodcasts": {
+                badge = <ApplePodcastBadge />
+                break
+            }
+            case "Spotify": {
+                badge = <SpotifyBadge />
+                break
+            }
         }
 
         return (
             <a
-                key={link!.link}
+                key={link.link}
                 className={styles.linkBadge}
-                href={link!.link}
+                href={link.link}
                 target="_blank"
                 rel="noopener noreferrer"
             >
