@@ -1,51 +1,22 @@
 import React from "react"
 import { graphql, useStaticQuery } from "gatsby"
 
-import Layout from "../components/layout"
+import SpotifyBadge from "../../content/londonliving/badges/Listen_on_spotify.inline.svg"
+import ApplePodcastBadge from "../../content/londonliving/badges/US_UK_Apple_Podcasts_Listen_Color_Lockup_RGB_Wht_Type.inline.svg"
 
-import SpotifyBadge from "../content/londonliving/badges/Listen_on_spotify.inline.svg"
-import ApplePodcastBadge from "../content/londonliving/badges/US_UK_Apple_Podcasts_Listen_Color_Lockup_RGB_Wht_Type.inline.svg"
+import LondonLivingLogo from "../../content/londonliving/LL_logo.inline.svg"
 
-import LondonLivingLogo from "../content/londonliving/LL_logo.inline.svg"
-
-import Section from "../components/section"
-
-import styles from "./londonliving.module.scss"
-
-import HeaderUnderlay from "../components/header-underlay"
-
-type Episode = {
-    title: string
-    audioUrl: string
-    blurb: string
-}
-
-type Season = {
-    title: string
-    episodes: Episode[]
-}
+import styles from "../londonliving.module.scss"
+import Layout from "../../components/layout"
+import HeaderUnderlay from "../../components/header-underlay"
+import Section from "../../components/section"
+import PodcastEpisode, { Episode } from "./_components/podcast-episode"
 
 type PodcastServiceLink = {
     name: string
     link: string
     type: "ApplePodcasts" | "Spotify"
 }
-
-const PodcastEpisode: React.FC<Episode> = ({ title, audioUrl, blurb }) => (
-    <div key={title} className={styles.episode}>
-        <h2>{title}</h2>
-        <div className={styles.blurb}>
-            <p>{blurb}</p>
-        </div>
-        <div className={styles.media}>
-            <div className={styles.audio}>
-                <audio controls={true} preload="metadata">
-                    <source src={audioUrl} type="audio/mpeg" />
-                </audio>
-            </div>
-        </div>
-    </div>
-)
 
 const LondonLivingPage: React.FC<{}> = () => {
     const data = useStaticQuery<GatsbyTypes.LondonLivingQuery>(graphql`
@@ -138,10 +109,8 @@ const LondonLivingPage: React.FC<{}> = () => {
                                 __html: data.mainContent!.html!,
                             }}
                         />
-
                         <div className={styles.links}>{links}</div>
                     </div>
-
                     <div className={styles.podcast}>
                         <div className={styles.seasons}>{episodes}</div>
                     </div>
