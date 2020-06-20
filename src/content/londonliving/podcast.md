@@ -10,7 +10,7 @@ seasons:
   - title: "1"
     episodes:
     - title: "Performance & Pressure: Norman"
-      blurb: Norman, a senior executive for an international energy company, speaks about the performance culture of the work place.
+      blurb: Norman, a senior executive for an international energy company, speaks about the performance culture of the workplace.
       image: ./images/LL-norman.jpg
       audioUrl: https://s3-eu-west-1.amazonaws.com/media.christchurchmayfair.org/londonliving/Norman-10mins_v3.1.mp3
     - title: "Control & Physical Safety: Connie"

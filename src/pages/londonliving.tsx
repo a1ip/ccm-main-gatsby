@@ -31,23 +31,21 @@ type PodcastServiceLink = {
     type: "ApplePodcasts" | "Spotify"
 }
 
-const PodcastEpisode: React.FC<Episode> = ({ title, audioUrl, blurb }) => {
-    return (
-        <div key={title} className={styles.episode}>
-            <h2>{title}</h2>
-            <div className={styles.blurb}>
-                <p>{blurb}</p>
-            </div>
-            <div className={styles.media}>
-                <div className={styles.audio}>
-                    <audio controls={true} preload="metadata">
-                        <source src={audioUrl} type="audio/mpeg" />
-                    </audio>
-                </div>
+const PodcastEpisode: React.FC<Episode> = ({ title, audioUrl, blurb }) => (
+    <div key={title} className={styles.episode}>
+        <h2>{title}</h2>
+        <div className={styles.blurb}>
+            <p>{blurb}</p>
+        </div>
+        <div className={styles.media}>
+            <div className={styles.audio}>
+                <audio controls={true} preload="metadata">
+                    <source src={audioUrl} type="audio/mpeg" />
+                </audio>
             </div>
         </div>
-    )
-}
+    </div>
+)
 
 const LondonLivingPage: React.FC<{}> = () => {
     const data = useStaticQuery<GatsbyTypes.LondonLivingQuery>(graphql`
@@ -82,19 +80,17 @@ const LondonLivingPage: React.FC<{}> = () => {
         }
     `)
 
-    const episodes = data.podcast!.frontmatter!.seasons!.map(
-        (season: any) => {
-            const episodes = season.episodes.map((episode: Episode) => (
-                <PodcastEpisode key={episode.audioUrl} {...episode} />
-            ))
-            return (
-                <div className={styles.season} key={season.title}>
-                    <h3>Season {season.title}</h3>
-                    <div className={styles.episodes}>{episodes}</div>
-                </div>
-            )
-        }
-    )
+    const episodes = data.podcast!.frontmatter!.seasons!.map((season: any) => {
+        const episodes = season.episodes.map((episode: Episode) => (
+            <PodcastEpisode key={episode.audioUrl} {...episode} />
+        ))
+        return (
+            <div className={styles.season} key={season.title}>
+                <h3>Season {season.title}</h3>
+                <div className={styles.episodes}>{episodes}</div>
+            </div>
+        )
+    })
 
     const links = (data.podcast?.frontmatter?.links ?? []).map((link: any) => {
         let badge = <></>
